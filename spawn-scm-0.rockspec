@@ -8,6 +8,9 @@ description = {
 	homepage = "https://github.com/daurnimator/lua-spawn";
 	license = "MIT/X11";
 }
+supported_platforms = {
+	"unix";
+}
 dependencies = {}
 build = {
 	type = "builtin";
