@@ -5,6 +5,8 @@
 #include <lua.h>
 #include <lauxlib.h>
 
+extern char** environ;
+
 #if LUA_VERSION_NUM < 503
 #if LUA_VERSION_NUM < 502
 #define luaL_newlibtable(L, l) \
@@ -78,6 +80,10 @@ static const char** luaL_checkarraystrings(lua_State *L, int arg) {
 	return ret;
 }
 
+static const char** luaL_optarraystrings(lua_State *L, int n, const char** def) {
+	return lua_isnoneornil(L, n) ? def : luaL_checkarraystrings(L, n);
+}
+
 static int l_posix_spawn(lua_State *L) {
 	int r;
 	pid_t pid;
@@ -85,7 +91,7 @@ static int l_posix_spawn(lua_State *L) {
 	posix_spawn_file_actions_t *file_actions = luaL_checkudata(L, 2, "posix_spawn_file_actions_t");
 	posix_spawnattr_t *attr = luaL_checkudata(L, 3, "posix_spawnattr_t");
 	const char **argv = luaL_checkarraystrings(L, 4);
-	const char **envp = luaL_checkarraystrings(L, 5);
+	const char **envp = luaL_optarraystrings(L, 5, (const char**)environ);
 	if (0 != (r = posix_spawn(&pid, path, file_actions, attr, (char*const*)argv, (char*const*)envp))) {
 		lua_pushnil(L);
 		lua_pushstring(L, strerror(r));
@@ -104,7 +110,7 @@ static int l_posix_spawnp(lua_State *L) {
 	posix_spawn_file_actions_t *file_actions = luaL_checkudata(L, 2, "posix_spawn_file_actions_t");
 	posix_spawnattr_t *attr = luaL_checkudata(L, 3, "posix_spawnattr_t");
 	const char **argv = luaL_checkarraystrings(L, 4);
-	const char **envp = luaL_checkarraystrings(L, 5);
+	const char **envp = luaL_optarraystrings(L, 5, (const char**)environ);
 	if (0 != (r = posix_spawnp(&pid, file, file_actions, attr, (char*const*)argv, (char*const*)envp))) {
 		lua_pushnil(L);
 		lua_pushstring(L, strerror(r));

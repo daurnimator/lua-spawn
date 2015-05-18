@@ -5,7 +5,7 @@ local default_attr = posix.new_attr()
 
 local function start(program, ...)
 	return posix.spawnp(program, default_file_actions, default_attr,
-		{ program, ... }, {})
+		{ program, ... }, nil)
 end
 
 local function run(program, ...)
