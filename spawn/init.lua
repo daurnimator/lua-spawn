@@ -12,8 +12,14 @@ local function run(program, ...)
 	return posix.waitpid(start(program, ...))
 end
 
+
+local function system(arg)
+	return run("/bin/sh", "-c", arg)
+end
+
 return {
 	posix = posix;
 	start = start;
 	run = run;
+	system = system;
 }
