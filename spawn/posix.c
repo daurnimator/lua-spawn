@@ -489,6 +489,20 @@ waitpid:
 	return 3;  /* return true/nil,what,code */
 }
 
+static int l_kill(lua_State *L) {
+	int r;
+	pid_t pid = luaL_optinteger(L, 1, 0);
+	int sig = luaL_optinteger(L, 2, SIGTERM);
+	if (0 != (r = kill(pid, sig))) {
+		lua_pushnil(L);
+		lua_pushstring(L, strerror(r));
+		lua_pushinteger(L, r);
+		return 3;
+	}
+	lua_pushboolean(L, 1);
+	return 1;
+}
+
 static const luaL_Reg spawnattr_methods[] = {
 	// { "getsigdefault", l_posix_spawnattr_getsigdefault },
 	// { "setsigdefault", l_posix_spawnattr_setsigdefault },
@@ -518,6 +532,7 @@ static const luaL_Reg lib[] = {
 	{ "new_attr", l_posix_spawnattr_init },
 	{ "new_file_actions", l_posix_spawn_file_actions_init },
 	{ "waitpid", l_waitpid },
+	{ "kill", l_kill },
 	{ NULL, NULL }
 };
 
