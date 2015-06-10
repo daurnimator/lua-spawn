@@ -473,7 +473,7 @@ waitpid:
 		what = "signal";
 	} else if (WIFSTOPPED(stat)) {
 		stat = WSTOPSIG(stat);
-		what = "stopp";
+		what = "stop";
 #ifdef WIFCONTINUED
 	} else if (WIFCONTINUED(stat)) {
 		stat = SIGCONT;
