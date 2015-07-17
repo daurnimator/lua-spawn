@@ -230,7 +230,7 @@ static int l_posix_spawnattr_getflags(lua_State *L) {
 	lua_pushboolean(L, flags & POSIX_SPAWN_SETSCHEDULER);
 	lua_setfield(L, -2, "setscheduler");
 #ifdef POSIX_SPAWN_USEVFORK
-	lua_pushboolean(L, flags|POSIX_SPAWN_USEVFORK);
+	lua_pushboolean(L, flags & POSIX_SPAWN_USEVFORK);
 	lua_setfield(L, -2, "usevfork");
 #endif
 	return 1;
