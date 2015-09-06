@@ -16,6 +16,9 @@ build = {
 	type = "builtin";
 	modules = {
 		["spawn.init"] = "spawn/init.lua";
+		["spawn.pipe"] = {
+			sources = "spawn/pipe.c";
+		};
 		["spawn.posix"] = {
 			sources = "spawn/posix.c";
 		};
