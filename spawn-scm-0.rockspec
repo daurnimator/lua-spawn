@@ -1,7 +1,7 @@
 package = "spawn"
 version = "scm-0"
 source = {
-	url = "git://github.com/daurnimator/lua-spawn.git"
+	url = "git://github.com/daurnimator/lua-spawn.git";
 }
 description = {
 	summary = "A lua library to spawn programs";
@@ -11,7 +11,9 @@ description = {
 supported_platforms = {
 	"unix";
 }
-dependencies = {}
+dependencies = {
+	"lua >= 5.1, < 5.4";
+}
 build = {
 	type = "builtin";
 	modules = {
