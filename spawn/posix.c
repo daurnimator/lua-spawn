@@ -7,6 +7,8 @@
 #include <lauxlib.h>
 #include "compat-5.3.h"
 
+int luaopen_spawn_sigset(lua_State *L);
+
 extern char** environ;
 
 static const char** luaL_checkarraystrings(lua_State *L, int arg) {
@@ -92,26 +94,31 @@ static int l_posix_spawnattr_destroy(lua_State *L) {
 	return 1;
 }
 
-/*
 static int l_posix_spawnattr_getsigdefault(lua_State *L) {
 	int r;
 	posix_spawnattr_t *attr = luaL_checkudata(L, 1, "posix_spawnattr_t");
-	sigset_t sigdefault;
-	if (0 != (r = posix_spawnattr_getsigdefault(attr, &sigdefault))) {
+	sigset_t *set = luaL_testudata(L, 2, "sigset_t");
+	if (set) {
+		lua_settop(L, 2);
+	} else {
+		lua_settop(L, 1);
+		set = lua_newuserdata(L, sizeof(sigset_t));
+		luaL_setmetatable(L, "sigset_t");
+	}
+	if (0 != (r = posix_spawnattr_getsigdefault(attr, set))) {
 		lua_pushnil(L);
 		lua_pushstring(L, strerror(r));
 		lua_pushinteger(L, r);
 		return 3;
 	}
-
 	return 1;
 }
 
 static int l_posix_spawnattr_setsigdefault(lua_State *L) {
 	int r;
 	posix_spawnattr_t *attr = luaL_checkudata(L, 1, "posix_spawnattr_t");
-	sigset_t sigdefault = (L, 2);
-	if (0 != (r = posix_spawnattr_setsigdefault(attr, &sigdefault))) {
+	sigset_t *set = luaL_checkudata(L, 2, "sigset_t");
+	if (0 != (r = posix_spawnattr_setsigdefault(attr, set))) {
 		lua_pushnil(L);
 		lua_pushstring(L, strerror(r));
 		lua_pushinteger(L, r);
@@ -124,22 +131,28 @@ static int l_posix_spawnattr_setsigdefault(lua_State *L) {
 static int l_posix_spawnattr_getsigmask(lua_State *L) {
 	int r;
 	posix_spawnattr_t *attr = luaL_checkudata(L, 1, "posix_spawnattr_t");
-	sigset_t sigdefault;
-	if (0 != (r = posix_spawnattr_getsigmask(attr, &sigdefault))) {
+	sigset_t *set = luaL_testudata(L, 2, "sigset_t");
+	if (set) {
+		lua_settop(L, 2);
+	} else {
+		lua_settop(L, 1);
+		set = lua_newuserdata(L, sizeof(sigset_t));
+		luaL_setmetatable(L, "sigset_t");
+	}
+	if (0 != (r = posix_spawnattr_getsigmask(attr, set))) {
 		lua_pushnil(L);
 		lua_pushstring(L, strerror(r));
 		lua_pushinteger(L, r);
 		return 3;
 	}
-
 	return 1;
 }
 
 static int l_posix_spawnattr_setsigmask(lua_State *L) {
 	int r;
 	posix_spawnattr_t *attr = luaL_checkudata(L, 1, "posix_spawnattr_t");
-	sigset_t sigdefault = (L, 2);
-	if (0 != (r = posix_spawnattr_setsigmask(attr, &sigdefault))) {
+	sigset_t *set = luaL_checkudata(L, 2, "sigset_t");
+	if (0 != (r = posix_spawnattr_setsigmask(attr, set))) {
 		lua_pushnil(L);
 		lua_pushstring(L, strerror(r));
 		lua_pushinteger(L, r);
@@ -148,8 +161,6 @@ static int l_posix_spawnattr_setsigmask(lua_State *L) {
 	lua_pushboolean(L, 1);
 	return 1;
 }
-
-*/
 
 static int l_posix_spawnattr_getflags(lua_State *L) {
 	int r;
@@ -435,10 +446,10 @@ waitpid:
 }
 
 static const luaL_Reg spawnattr_methods[] = {
-	// { "getsigdefault", l_posix_spawnattr_getsigdefault },
-	// { "setsigdefault", l_posix_spawnattr_setsigdefault },
-	// { "getsigmask", l_posix_spawnattr_getsigmask },
-	// { "setsigmask", l_posix_spawnattr_setsigmask },
+	{ "getsigdefault", l_posix_spawnattr_getsigdefault },
+	{ "setsigdefault", l_posix_spawnattr_setsigdefault },
+	{ "getsigmask", l_posix_spawnattr_getsigmask },
+	{ "setsigmask", l_posix_spawnattr_setsigmask },
 	{ "getflags", l_posix_spawnattr_getflags },
 	{ "setflags", l_posix_spawnattr_setflags },
 	{ "getpgroup", l_posix_spawnattr_getpgroup },
@@ -478,6 +489,8 @@ int luaopen_spawn_posix(lua_State *L) {
 	luaL_newlib(L, spawn_file_actions_methods);
 	lua_setfield(L, -2, "__index");
 	lua_pop(L, 2);
+	/* make sure sigset module is loaded */
+	luaL_requiref(L, "spawn.sigset", luaopen_spawn_sigset, 0);
 
 	luaL_newlib(L, lib);
 	return 1;
