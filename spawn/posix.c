@@ -2,67 +2,12 @@
 #include <sys/wait.h>
 #include <errno.h> /* errno, EINTR */
 #include <string.h> /* strerror */
+
 #include <lua.h>
 #include <lauxlib.h>
+#include "compat-5.3.h"
 
 extern char** environ;
-
-#if LUA_VERSION_NUM < 503
-#if LUA_VERSION_NUM < 502
-#define luaL_newlibtable(L, l) \
-	(lua_createtable(L, 0, sizeof(l)/sizeof(*(l))-1))
-#define luaL_newlib(L, l) \
-	(luaL_newlibtable(L, l), luaL_register(L, NULL, l))
-static int lua_absindex (lua_State *L, int i) {
-	if (i < 0 && i > LUA_REGISTRYINDEX)
-		i += lua_gettop(L) + 1;
-	return i;
-}
-static lua_Integer lua_tointegerx(lua_State *L, int i, int *isnum) {
-	lua_Integer n = lua_tointeger(L, i);
-	if (isnum != NULL) {
-		*isnum = (n != 0 || lua_isnumber(L, i));
-	}
-	return n;
-}
-static void lua_len(lua_State *L, int i) {
-	switch (lua_type(L, i)) {
-		case LUA_TSTRING: /* fall through */
-		case LUA_TTABLE:
-			if (!luaL_callmeta(L, i, "__len"))
-				lua_pushnumber(L, (int)lua_objlen(L, i));
-			break;
-		case LUA_TUSERDATA:
-			if (luaL_callmeta(L, i, "__len"))
-				break;
-			/* maybe fall through */
-		default:
-			luaL_error(L, "attempt to get length of a %s value", lua_typename(L, lua_type(L, i)));
-	}
-}
-static int luaL_len(lua_State *L, int i) {
-	int res = 0, isnum = 0;
-	luaL_checkstack(L, 1, "not enough stack slots");
-	lua_len(L, i);
-	res = (int)lua_tointegerx(L, -1, &isnum);
-	lua_pop(L, 1);
-	if (!isnum)
-		luaL_error(L, "object length is not a number");
-	return res;
-}
-static void luaL_setmetatable(lua_State *L, const char *tname) {
-	luaL_checkstack(L, 1, "not enough stack slots");
-	luaL_getmetatable(L, tname);
-	lua_setmetatable(L, -2);
-}
-#endif
-#define lua_gettable(L, n) (lua_gettable(L, (n)), lua_type(L, -1))
-static int lua_geti(lua_State *L, int arg, lua_Integer n) {
-	arg = lua_absindex(L, arg);
-	lua_pushinteger(L, n);
-	return lua_gettable(L, arg);
-}
-#endif
 
 static const char** luaL_checkarraystrings(lua_State *L, int arg) {
 	lua_Integer n;

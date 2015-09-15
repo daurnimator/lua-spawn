@@ -16,8 +16,11 @@ build = {
 	type = "builtin";
 	modules = {
 		["spawn.init"] = "spawn/init.lua";
-		["spawn.posix"] = {
-			sources = "spawn/posix.c";
+		["spawn"] = {
+			incdirs = { "vendor/compat-5.3/c-api/" };
+			sources = {
+				"spawn/posix.c";
+			};
 		};
 	}
 }
