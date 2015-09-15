@@ -1,3 +1,4 @@
+local kill = require "spawn.kill"
 local posix = require "spawn.posix"
 
 local default_file_actions = posix.new_file_actions()
@@ -18,7 +19,9 @@ local function system(arg)
 end
 
 return {
+	kill = kill;
 	posix = posix;
+
 	start = start;
 	run = run;
 	system = system;
