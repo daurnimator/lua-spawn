@@ -1,5 +1,6 @@
 local kill = require "spawn.kill"
 local posix = require "spawn.posix"
+local sigset = require "spawn.sigset"
 
 local default_file_actions = posix.new_file_actions()
 local default_attr = posix.new_attr()
@@ -21,6 +22,7 @@ end
 return {
 	kill = kill;
 	posix = posix;
+	sigset = sigset;
 
 	start = start;
 	run = run;
