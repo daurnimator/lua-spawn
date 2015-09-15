@@ -25,6 +25,7 @@ build = {
 				"spawn/kill.c";
 				"spawn/posix.c";
 				"spawn/sigset.c";
+				"spawn/wait.c";
 			};
 		};
 	}

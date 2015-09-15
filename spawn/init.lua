@@ -1,6 +1,7 @@
 local kill = require "spawn.kill"
 local posix = require "spawn.posix"
 local sigset = require "spawn.sigset"
+local wait = require "spawn.wait"
 
 local default_file_actions = posix.new_file_actions()
 local default_attr = posix.new_attr()
@@ -11,7 +12,7 @@ local function start(program, ...)
 end
 
 local function run(program, ...)
-	return posix.waitpid(start(program, ...))
+	return wait.waitpid(start(program, ...))
 end
 
 
@@ -23,6 +24,7 @@ return {
 	kill = kill;
 	posix = posix;
 	sigset = sigset;
+	wait = wait;
 
 	start = start;
 	run = run;
