@@ -8,6 +8,8 @@
 #include <lauxlib.h>
 #include "compat-5.3.h"
 
+#include "lua-spawn.h"
+
 static int l_sigset_empty(lua_State *L) {
 	sigset_t *set = luaL_checkudata(L, 1, "sigset_t");
 	if (0 != sigemptyset(set)) {

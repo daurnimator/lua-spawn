@@ -7,6 +7,8 @@
 #include <lauxlib.h>
 #include "compat-5.3.h"
 
+#include "lua-spawn.h"
+
 static int l_waitpid(lua_State *L) {
 	int r;
 	pid_t which_pid;

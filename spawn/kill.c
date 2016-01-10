@@ -6,6 +6,8 @@
 #include <lauxlib.h>
 #include "compat-5.3.h"
 
+#include "lua-spawn.h"
+
 static int l_kill(lua_State *L) {
 	int r;
 	pid_t pid = luaL_optinteger(L, 1, 0);

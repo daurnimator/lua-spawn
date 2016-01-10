@@ -8,7 +8,7 @@
 #include <lauxlib.h>
 #include "compat-5.3.h"
 
-int luaopen_spawn_sigset(lua_State *L);
+#include "lua-spawn.h"
 
 #ifdef __APPLE__
 #include <crt_externs.h>
