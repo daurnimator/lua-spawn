@@ -2,6 +2,7 @@
 #include <signal.h> /* sigset_t */
 #include <spawn.h>
 #include <string.h> /* strerror */
+#include <unistd.h> /* _POSIX_PRIORITY_SCHEDULING */
 
 #include <lua.h>
 #include <lauxlib.h>
@@ -181,10 +182,12 @@ static int l_posix_spawnattr_getflags(lua_State *L) {
 	lua_setfield(L, -2, "setsigdef");
 	lua_pushboolean(L, flags & POSIX_SPAWN_SETSIGMASK);
 	lua_setfield(L, -2, "setsigmask");
-	lua_pushboolean(L, flags & POSIX_SPAWN_SETSCHEDPARAM);
-	lua_setfield(L, -2, "setschedparam");
+#ifdef _POSIX_PRIORITY_SCHEDULING
 	lua_pushboolean(L, flags & POSIX_SPAWN_SETSCHEDULER);
 	lua_setfield(L, -2, "setscheduler");
+	lua_pushboolean(L, flags & POSIX_SPAWN_SETSCHEDPARAM);
+	lua_setfield(L, -2, "setschedparam");
+#endif
 #ifdef POSIX_SPAWN_USEVFORK
 	lua_pushboolean(L, flags & POSIX_SPAWN_USEVFORK);
 	lua_setfield(L, -2, "usevfork");
@@ -205,11 +208,14 @@ static int l_posix_spawnattr_setflags(lua_State *L) {
 	if (lua_toboolean(L, -1)) flags |= POSIX_SPAWN_SETSIGDEF;
 	lua_getfield(L, 2, "setsigmask");
 	if (lua_toboolean(L, -1)) flags |= POSIX_SPAWN_SETSIGMASK;
-	lua_getfield(L, 2, "setschedparam");
-	if (lua_toboolean(L, -1)) flags |= POSIX_SPAWN_SETSCHEDPARAM;
+	lua_pop(L, 4);
+#ifdef _POSIX_PRIORITY_SCHEDULING
 	lua_getfield(L, 2, "setscheduler");
 	if (lua_toboolean(L, -1)) flags |= POSIX_SPAWN_SETSCHEDULER;
-	lua_pop(L, 6);
+	lua_getfield(L, 2, "setschedparam");
+	if (lua_toboolean(L, -1)) flags |= POSIX_SPAWN_SETSCHEDPARAM;
+	lua_pop(L, 2);
+#endif
 #ifdef POSIX_SPAWN_USEVFORK
 	lua_getfield(L, 2, "usevfork");
 	if (lua_toboolean(L, -1)) flags |= POSIX_SPAWN_USEVFORK;
@@ -253,6 +259,7 @@ static int l_posix_spawnattr_setpgroup(lua_State *L) {
 	return 1;
 }
 
+#ifdef _POSIX_PRIORITY_SCHEDULING
 static int l_posix_spawnattr_getschedpolicy(lua_State *L) {
 	int r;
 	posix_spawnattr_t *attr = luaL_checkudata(L, 1, "posix_spawnattr_t");
@@ -309,7 +316,7 @@ static int l_posix_spawnattr_setschedparam(lua_State *L) {
 	lua_pushboolean(L, 1);
 }
 */
-
+#endif
 
 static int l_posix_spawn_file_actions_init(lua_State *L) {
 	int r;
@@ -392,10 +399,12 @@ static const luaL_Reg spawnattr_methods[] = {
 	{ "setflags", l_posix_spawnattr_setflags },
 	{ "getpgroup", l_posix_spawnattr_getpgroup },
 	{ "setpgroup", l_posix_spawnattr_setpgroup },
+#ifdef _POSIX_PRIORITY_SCHEDULING
 	{ "getschedpolicy", l_posix_spawnattr_getschedpolicy },
 	{ "setschedpolicy", l_posix_spawnattr_setschedpolicy },
 	// { "getschedparam", l_posix_spawnattr_getschedparam },
 	// { "setschedparam", l_posix_spawnattr_setschedparam },
+#endif
 	{ NULL, NULL }
 };
 
