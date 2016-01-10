@@ -10,7 +10,12 @@
 
 int luaopen_spawn_sigset(lua_State *L);
 
+#ifdef __APPLE__
+#include <crt_externs.h>
+#define environ (*_NSGetEnviron())
+#else
 extern char** environ;
+#endif
 
 static const char** luaL_checkarraystrings(lua_State *L, int arg) {
 	lua_Integer n;
