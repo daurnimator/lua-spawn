@@ -11,10 +11,13 @@ local function start(program, ...)
 		{ program, ... }, nil)
 end
 
-local function run(program, ...)
-	return wait.waitpid(start(program, ...))
+local function run(...)
+	local pid, err, errno = start(...)
+	if pid == nil then
+		return nil, err, errno
+	end
+	return wait.waitpid(pid)
 end
-
 
 local function system(arg)
 	return run("/bin/sh", "-c", arg)
