@@ -42,7 +42,10 @@ waitpid:
 	if (-1 == (which_pid = waitpid(pid, &stat, options))) {
 		r = errno;
 		if (r == EINTR) goto waitpid;
-		return luaL_error(L, "waitpid: %s", strerror(r));
+		lua_pushnil(L);
+		lua_pushstring(L, strerror(r));
+		lua_pushinteger(L, r);
+		return 3;
 	}
 	/* similar to lua 5.2+'s luaL_execresult */
 	if ((options & WNOHANG) && which_pid == 0) {
