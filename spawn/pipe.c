@@ -1,6 +1,6 @@
-#include <errno.h> /* errno, EINTR */
+#include <errno.h> /* errno */
 #include <string.h> /* strerror */
-#include <unistd.h>
+#include <unistd.h> /* pipe */
 
 #include <lua.h>
 #include <lauxlib.h>
