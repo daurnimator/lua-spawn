@@ -1,9 +1,11 @@
 #include <errno.h> /* errno, EINTR */
 #include <string.h> /* strerror */
 #include <unistd.h>
+
 #include <lua.h>
 #include <lauxlib.h>
 
+#include "lua-spawn.h"
 
 static int l_pipe(lua_State *L) {
 	int fildes[2];
