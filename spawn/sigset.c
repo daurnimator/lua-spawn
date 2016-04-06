@@ -115,6 +115,11 @@ static const luaL_Reg methods[] = {
 
 static const luaL_Reg lib[] = {
 	{ "new", l_sigset_new },
+	{ "empty", l_sigset_empty },
+	{ "fill", l_sigset_fill },
+	{ "add", l_sigset_add },
+	{ "del", l_sigset_del },
+	{ "ismember", l_sigset_ismember },
 	{ NULL, NULL }
 };
 
