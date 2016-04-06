@@ -9,13 +9,12 @@
 #include "lua-spawn.h"
 
 static int l_kill(lua_State *L) {
-	int r;
 	pid_t pid = luaL_optinteger(L, 1, 0);
 	int sig = luaL_optinteger(L, 2, SIGTERM);
-	if (0 != (r = kill(pid, sig))) {
+	if (0 != kill(pid, sig)) {
 		lua_pushnil(L);
-		lua_pushstring(L, strerror(r));
-		lua_pushinteger(L, r);
+		lua_pushstring(L, strerror(errno));
+		lua_pushinteger(L, errno);
 		return 3;
 	}
 	lua_pushboolean(L, 1);
