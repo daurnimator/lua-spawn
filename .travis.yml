@@ -27,7 +27,7 @@ install:
 
 script:
   - luacheck .
-  - luarocks make
+  - luarocks make CFLAGS="-O2 -fPIC -Wall -Wextra -Werror"
 
 notifications:
   email:
