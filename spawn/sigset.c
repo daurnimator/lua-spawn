@@ -10,9 +10,22 @@
 
 #include "lua-spawn.h"
 
+static sigset_t* l_sigset_create(lua_State *L) {
+	sigset_t *set;
+	set = lua_newuserdata(L, sizeof(sigset_t));
+	luaL_setmetatable(L, "sigset_t");
+	return set;
+}
+
 static int l_sigset_empty(lua_State *L) {
-	sigset_t *set = luaL_checkudata(L, 1, "sigset_t");
-	lua_settop(L, 1);
+	sigset_t *set;
+	if (lua_isnoneornil(L, 1)) {
+		lua_settop(L, 0);
+		set = l_sigset_create(L);
+	} else {
+		set = luaL_checkudata(L, 1, "sigset_t");
+		lua_settop(L, 1);
+	}
 	if (0 != sigemptyset(set)) {
 		lua_pushnil(L);
 		lua_pushstring(L, strerror(errno));
@@ -23,8 +36,14 @@ static int l_sigset_empty(lua_State *L) {
 }
 
 static int l_sigset_fill(lua_State *L) {
-	sigset_t *set = luaL_checkudata(L, 1, "sigset_t");
-	lua_settop(L, 1);
+	sigset_t *set;
+	if (lua_isnoneornil(L, 1)) {
+		lua_settop(L, 0);
+		set = l_sigset_create(L);
+	} else {
+		set = luaL_checkudata(L, 1, "sigset_t");
+		lua_settop(L, 1);
+	}
 	if (0 != sigfillset(set)) {
 		lua_pushnil(L);
 		lua_pushstring(L, strerror(errno));
@@ -75,16 +94,8 @@ static int l_sigset_ismember(lua_State *L) {
 }
 
 static int l_sigset_new(lua_State *L) {
-	sigset_t *set = lua_newuserdata(L, sizeof(sigset_t));
-	luaL_setmetatable(L, "sigset_t");
-	/* initialise to empty */
-	if (0 != sigemptyset(set)) {
-		lua_pushnil(L);
-		lua_pushstring(L, strerror(errno));
-		lua_pushinteger(L, errno);
-		return 3;
-	}
-	return 1;
+	lua_settop(L, 0);
+	return l_sigset_empty(L);
 }
 
 static int l_sigset_tostring(lua_State *L) {
