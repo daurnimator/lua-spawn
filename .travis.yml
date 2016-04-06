@@ -21,6 +21,7 @@ before_install:
   - export PATH=$PATH:~/hererocks/bin
   - eval `luarocks path --bin`
   - luarocks install luacheck
+  - luarocks install busted
 
 install:
   - luarocks install --only-deps spawn-scm-0.rockspec
@@ -28,6 +29,7 @@ install:
 script:
   - luacheck .
   - luarocks make CFLAGS="-O2 -fPIC -Wall -Wextra -Werror"
+  - busted
 
 notifications:
   email:
