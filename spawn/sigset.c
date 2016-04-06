@@ -12,51 +12,51 @@
 
 static int l_sigset_empty(lua_State *L) {
 	sigset_t *set = luaL_checkudata(L, 1, "sigset_t");
+	lua_settop(L, 1);
 	if (0 != sigemptyset(set)) {
 		lua_pushnil(L);
 		lua_pushstring(L, strerror(errno));
 		lua_pushinteger(L, errno);
 		return 3;
 	}
-	lua_pushboolean(L, 1);
 	return 1;
 }
 
 static int l_sigset_fill(lua_State *L) {
 	sigset_t *set = luaL_checkudata(L, 1, "sigset_t");
+	lua_settop(L, 1);
 	if (0 != sigfillset(set)) {
 		lua_pushnil(L);
 		lua_pushstring(L, strerror(errno));
 		lua_pushinteger(L, errno);
 		return 3;
 	}
-	lua_pushboolean(L, 1);
 	return 1;
 }
 
 static int l_sigset_add(lua_State *L) {
 	sigset_t *set = luaL_checkudata(L, 1, "sigset_t");
 	int signum = luaL_checkinteger(L, 2);
+	lua_settop(L, 1);
 	if (0 != sigaddset(set, signum)) {
 		lua_pushnil(L);
 		lua_pushstring(L, strerror(errno));
 		lua_pushinteger(L, errno);
 		return 3;
 	}
-	lua_pushboolean(L, 1);
 	return 1;
 }
 
 static int l_sigset_del(lua_State *L) {
 	sigset_t *set = luaL_checkudata(L, 1, "sigset_t");
 	int signum = luaL_checkinteger(L, 2);
+	lua_settop(L, 1);
 	if (0 != sigdelset(set, signum)) {
 		lua_pushnil(L);
 		lua_pushstring(L, strerror(errno));
 		lua_pushinteger(L, errno);
 		return 3;
 	}
-	lua_pushboolean(L, 1);
 	return 1;
 }
 
