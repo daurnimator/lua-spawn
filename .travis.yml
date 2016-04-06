@@ -1,0 +1,39 @@
+language: python
+
+sudo: false
+
+env:
+  matrix:
+    - LUA="lua 5.1"
+    - LUA="lua 5.2"
+    - LUA="lua 5.3"
+    - LUA="luajit @"
+    - LUA="luajit 2.0"
+    - LUA="luajit 2.1"
+
+branches:
+  only:
+    - master
+
+before_install:
+  - pip install hererocks
+  - hererocks ~/hererocks -r^ --$LUA
+  - export PATH=$PATH:~/hererocks/bin
+  - eval `luarocks path --bin`
+  - luarocks install luacheck
+
+install:
+  - luarocks install --only-deps spawn-scm-0.rockspec
+
+script:
+  - luacheck .
+  - luarocks make
+
+notifications:
+  email:
+    on_success: change
+    on_failure: always
+
+cache:
+  directories:
+    - $HOME/.cache/hererocks
