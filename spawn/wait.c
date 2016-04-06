@@ -1,7 +1,7 @@
-#include <sys/types.h> /* pid_t */
-#include <sys/wait.h>
 #include <errno.h> /* errno, EINTR */
 #include <string.h> /* strerror */
+#include <sys/types.h> /* pid_t */
+#include <sys/wait.h>
 
 #include <lua.h>
 #include <lauxlib.h>

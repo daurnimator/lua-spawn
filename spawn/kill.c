@@ -1,7 +1,7 @@
 #include <errno.h> /* errno */
-#include <sys/types.h> /* pid_t */
 #include <signal.h> /* kill, SIGTERM */
 #include <string.h> /* strerror */
+#include <sys/types.h> /* pid_t */
 
 #include <lua.h>
 #include <lauxlib.h>

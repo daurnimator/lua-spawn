@@ -1,7 +1,7 @@
 /* bind sigset_t manipulation functions */
 
-#include <signal.h> /* sigset_t, sigemptyset, sigfillset, sigaddset, sigdelset, sigismember */
 #include <errno.h> /* errno */
+#include <signal.h> /* sigset_t, sigemptyset, sigfillset, sigaddset, sigdelset, sigismember */
 #include <string.h> /* strerror */
 
 #include <lua.h>

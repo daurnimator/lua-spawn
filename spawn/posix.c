@@ -1,7 +1,7 @@
-#include <sys/types.h> /* pid_t */
 #include <signal.h> /* sigset_t */
 #include <spawn.h>
 #include <string.h> /* strerror */
+#include <sys/types.h> /* pid_t */
 #include <unistd.h> /* _POSIX_PRIORITY_SCHEDULING */
 
 #include <lua.h>
