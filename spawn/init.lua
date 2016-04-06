@@ -1,6 +1,7 @@
 local kill = require "spawn.kill"
 local posix = require "spawn.posix"
 local sigset = require "spawn.sigset"
+local signals = require "spawn.signals"
 local wait = require "spawn.wait"
 
 local default_file_actions = posix.new_file_actions()
@@ -27,6 +28,7 @@ return {
 	kill = kill;
 	posix = posix;
 	sigset = sigset;
+	signals = signals;
 	wait = wait;
 
 	start = start;
