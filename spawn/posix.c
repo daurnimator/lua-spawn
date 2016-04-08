@@ -43,8 +43,10 @@ static int l_posix_spawn(lua_State *L) {
 	const char *path = luaL_checkstring(L, 1);
 	posix_spawn_file_actions_t *file_actions = luaL_checkudata(L, 2, "posix_spawn_file_actions_t");
 	posix_spawnattr_t *attr = luaL_checkudata(L, 3, "posix_spawnattr_t");
-	const char **argv = luaL_checkarraystrings(L, 4);
-	const char **envp = luaL_optarraystrings(L, 5, (const char**)environ);
+	const char **argv, **envp;
+	lua_settop(L, 5);
+	argv = luaL_checkarraystrings(L, 4);
+	envp = luaL_optarraystrings(L, 5, (const char**)environ);
 	if (0 != (r = posix_spawn(&pid, path, file_actions, attr, (char*const*)argv, (char*const*)envp))) {
 		lua_pushnil(L);
 		lua_pushstring(L, strerror(r));
@@ -62,8 +64,10 @@ static int l_posix_spawnp(lua_State *L) {
 	const char *file = luaL_checkstring(L, 1);
 	posix_spawn_file_actions_t *file_actions = luaL_checkudata(L, 2, "posix_spawn_file_actions_t");
 	posix_spawnattr_t *attr = luaL_checkudata(L, 3, "posix_spawnattr_t");
-	const char **argv = luaL_checkarraystrings(L, 4);
-	const char **envp = luaL_optarraystrings(L, 5, (const char**)environ);
+	const char **argv, **envp;
+	lua_settop(L, 5);
+	argv = luaL_checkarraystrings(L, 4);
+	envp = luaL_optarraystrings(L, 5, (const char**)environ);
 	if (0 != (r = posix_spawnp(&pid, file, file_actions, attr, (char*const*)argv, (char*const*)envp))) {
 		lua_pushnil(L);
 		lua_pushstring(L, strerror(r));
