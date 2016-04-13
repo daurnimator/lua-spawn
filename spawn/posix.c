@@ -1,3 +1,4 @@
+#include <fcntl.h> /* O_* */
 #include <signal.h> /* sigset_t */
 #include <spawn.h>
 #include <string.h> /* strerror */
@@ -358,8 +359,107 @@ static int l_posix_spawn_file_actions_addopen(lua_State *L) {
 	posix_spawn_file_actions_t *file_actions = luaL_checkudata(L, 1, "posix_spawn_file_actions_t");
 	int fd = luaL_checkinteger(L, 2);
 	const char *path = luaL_checkstring(L, 3);
-	int oflag = luaL_checkinteger(L, 4);
-	mode_t mode = luaL_optinteger(L, 5, 0);
+	int oflag;
+	mode_t mode;
+	switch (lua_type(L, 4)) {
+	case LUA_TNUMBER:
+		oflag = lua_tointeger(L, 4);
+		break;
+	case LUA_TTABLE:
+		oflag = 0;
+
+		lua_getfield(L, 4, "rdwr");
+		if (lua_toboolean(L, -1)) oflag |= O_RDWR;
+		lua_getfield(L, 4, "wronly");
+		if (lua_toboolean(L, -1)) {
+			luaL_argcheck(L, !oflag, 4, "must specify one of rdonly, wronly or rdwr");
+			oflag |= O_WRONLY;
+		}
+		lua_getfield(L, 4, "rdonly");
+		if (lua_toboolean(L, -1)) {
+			luaL_argcheck(L, !oflag, 4, "must specify one of rdonly, wronly or rdwr");
+			oflag |= O_RDONLY;
+		} else if(!oflag) {
+			return luaL_argerror(L, 4, "must specify one of rdonly, wronly or rdwr");
+		}
+		lua_pop(L, 3);
+
+		/* defined in posix */
+		lua_getfield(L, 4, "append");
+		if (lua_toboolean(L, -1)) oflag |= O_APPEND;
+		lua_getfield(L, 4, "creat");
+		if (lua_toboolean(L, -1)) oflag |= O_CREAT;
+		lua_getfield(L, 4, "dsync");
+		if (lua_toboolean(L, -1)) oflag |= O_DSYNC;
+		lua_getfield(L, 4, "excl");
+		if (lua_toboolean(L, -1)) oflag |= O_EXCL;
+		lua_getfield(L, 4, "noctty");
+		if (lua_toboolean(L, -1)) oflag |= O_NOCTTY;
+		lua_getfield(L, 4, "nonblock");
+		if (lua_toboolean(L, -1)) oflag |= O_NONBLOCK;
+		lua_getfield(L, 4, "rsync");
+		if (lua_toboolean(L, -1)) oflag |= O_RSYNC;
+		lua_getfield(L, 4, "sync");
+		if (lua_toboolean(L, -1)) oflag |= O_SYNC;
+		lua_getfield(L, 4, "trunc");
+		if (lua_toboolean(L, -1)) oflag |= O_TRUNC;
+		lua_pop(L, 9);
+
+#ifdef O_ASYNC
+		lua_getfield(L, 4, "async");
+		if (lua_toboolean(L, -1)) oflag |= O_ASYNC;
+		lua_pop(L, 1);
+#endif
+#ifdef O_CLOEXEC
+		lua_getfield(L, 4, "cloexec");
+		if (lua_toboolean(L, -1)) oflag |= O_CLOEXEC;
+		lua_pop(L, 1);
+#endif
+#ifdef O_DIRECT
+		lua_getfield(L, 4, "direct");
+		if (lua_toboolean(L, -1)) oflag |= O_DIRECT;
+		lua_pop(L, 1);
+#endif
+#ifdef O_DIRECTORY
+		lua_getfield(L, 4, "directory");
+		if (lua_toboolean(L, -1)) oflag |= O_DIRECTORY;
+		lua_pop(L, 1);
+#endif
+#ifdef O_LARGEFILE
+		lua_getfield(L, 4, "largefile");
+		if (lua_toboolean(L, -1)) oflag |= O_LARGEFILE;
+		lua_pop(L, 1);
+#endif
+#ifdef O_NDELAY
+		lua_getfield(L, 4, "ndelay");
+		if (lua_toboolean(L, -1)) oflag |= O_NDELAY;
+		lua_pop(L, 1);
+#endif
+#ifdef O_NOATIME
+		lua_getfield(L, 4, "noatime");
+		if (lua_toboolean(L, -1)) oflag |= O_NOATIME;
+		lua_pop(L, 1);
+#endif
+#ifdef O_NOFOLLOW
+		lua_getfield(L, 4, "nofollow");
+		if (lua_toboolean(L, -1)) oflag |= O_NOFOLLOW;
+		lua_pop(L, 1);
+#endif
+#ifdef O_PATH
+		lua_getfield(L, 4, "path");
+		if (lua_toboolean(L, -1)) oflag |= O_PATH;
+		lua_pop(L, 1);
+#endif
+#ifdef O_TMPFILE
+		lua_getfield(L, 4, "tmpfile");
+		if (lua_toboolean(L, -1)) oflag |= O_TMPFILE;
+		lua_pop(L, 1);
+#endif
+		break;
+	default:
+		return luaL_argerror(L, 4, "expected integer or set of options");
+	}
+	mode = luaL_optinteger(L, 5, 0);
 	if (0 != (r = posix_spawn_file_actions_addopen(file_actions, fd, path, oflag, mode))) {
 		lua_pushnil(L);
 		lua_pushstring(L, strerror(r));
