@@ -359,7 +359,7 @@ static int l_posix_spawn_file_actions_addopen(lua_State *L) {
 	int fd = luaL_checkinteger(L, 2);
 	const char *path = luaL_checkstring(L, 3);
 	int oflag = luaL_checkinteger(L, 4);
-	mode_t mode = luaL_checkinteger(L, 4);
+	mode_t mode = luaL_optinteger(L, 5, 0);
 	if (0 != (r = posix_spawn_file_actions_addopen(file_actions, fd, path, oflag, mode))) {
 		lua_pushnil(L);
 		lua_pushstring(L, strerror(r));
