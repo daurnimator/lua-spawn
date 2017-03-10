@@ -6,7 +6,7 @@ source = {
 description = {
 	summary = "A lua library to spawn programs";
 	homepage = "https://github.com/daurnimator/lua-spawn";
-	license = "MIT/X11";
+	license = "MIT";
 }
 supported_platforms = {
 	"unix";
