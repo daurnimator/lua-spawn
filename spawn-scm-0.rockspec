@@ -26,7 +26,6 @@ build = {
 				"spawn/posix.c";
 			};
 		};
-		["spawn.kill"] = "spawn/kill.lua";
 		["spawn.sigset"] = "spawn/sigset.lua";
 		["spawn.wait"] = "spawn/wait.lua";
 	}

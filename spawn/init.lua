@@ -1,4 +1,3 @@
-local kill = require "spawn.kill"
 local posix = require "spawn.posix"
 local sigset = require "spawn.sigset"
 local wait = require "spawn.wait"
@@ -24,7 +23,6 @@ local function system(arg)
 end
 
 return {
-	kill = kill;
 	posix = posix;
 	sigset = sigset;
 	wait = wait;
