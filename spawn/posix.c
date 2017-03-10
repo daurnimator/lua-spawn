@@ -544,8 +544,6 @@ int luaopen_spawn_posix(lua_State *L) {
 	luaL_newlib(L, spawn_file_actions_methods);
 	lua_setfield(L, -2, "__index");
 	lua_pop(L, 2);
-	/* make sure sigset module is loaded */
-	luaL_requiref(L, "spawn.sigset", luaopen_spawn_sigset, 0);
 
 	luaL_newlib(L, lib);
 	return 1;

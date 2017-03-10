@@ -13,6 +13,7 @@ supported_platforms = {
 }
 dependencies = {
 	"lua >= 5.1, < 5.4";
+	"lunix";
 }
 build = {
 	type = "builtin";
@@ -22,11 +23,11 @@ build = {
 			defines = { "_POSIX_C_SOURCE=200809L" };
 			incdirs = { "vendor/compat-5.3/c-api/" };
 			sources = {
-				"spawn/kill.c";
 				"spawn/posix.c";
-				"spawn/sigset.c";
-				"spawn/wait.c";
 			};
 		};
+		["spawn.kill"] = "spawn/kill.lua";
+		["spawn.sigset"] = "spawn/sigset.lua";
+		["spawn.wait"] = "spawn/wait.lua";
 	}
 }
