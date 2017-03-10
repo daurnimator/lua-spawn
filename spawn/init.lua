@@ -22,9 +22,6 @@ local function system(arg)
 end
 
 return {
-	posix = posix;
-	wait = wait;
-
 	start = start;
 	run = run;
 	system = system;
