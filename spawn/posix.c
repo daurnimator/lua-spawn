@@ -9,8 +9,6 @@
 #include <lauxlib.h>
 #include "compat-5.3.h"
 
-#include "lua-spawn.h"
-
 #ifdef __APPLE__
 #include <crt_externs.h>
 #define environ (*_NSGetEnviron())
