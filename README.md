@@ -2,7 +2,7 @@ A lua library to spawn programs
 
 ## Rationale
 
-Spawning a new child program from a lua script is suprisingly hard.
+Spawning a new child program from a lua script is surprisingly hard.
 
 Existing solutions:
 
