@@ -1,5 +1,4 @@
 local posix = require "spawn.posix"
-local sigset = require "spawn.sigset"
 local wait = require "spawn.wait"
 
 local default_file_actions = posix.new_file_actions()
@@ -24,7 +23,6 @@ end
 
 return {
 	posix = posix;
-	sigset = sigset;
 	wait = wait;
 
 	start = start;
