@@ -15,8 +15,8 @@ local read, write, pid do
 	-- the second fd returned by pipe() can only be written to
 	-- "e" means to enable O_CLOEXEC (this way the other ends of the pipes are closed in the child)
 	local child_stdin, child_stdout
-	child_stdin, write = unix.fpipe("e")
-	read, child_stdout = unix.fpipe("e")
+	child_stdin, write = assert(unix.fpipe("e"))
+	read, child_stdout = assert(unix.fpipe("e"))
 	-- Tell posix_spawn to dup `child_stdin` to fd 0 in the child
 	assert(file_actions:adddup2(unix.fileno(child_stdin), 0))
 	-- Tell posix_spawn to dup `child_stdout` to fd 1 in the child
