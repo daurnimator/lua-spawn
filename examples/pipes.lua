@@ -18,11 +18,11 @@ local read, write, pid do
 	child_stdin, write = unix.fpipe("e")
 	read, child_stdout = unix.fpipe("e")
 	-- Tell posix_spawn to dup `child_stdin` to fd 0 in the child
-	file_actions:adddup2(unix.fileno(child_stdin), 0)
+	assert(file_actions:adddup2(unix.fileno(child_stdin), 0))
 	-- Tell posix_spawn to dup `child_stdout` to fd 1 in the child
-	file_actions:adddup2(unix.fileno(child_stdout), 1)
+	assert(file_actions:adddup2(unix.fileno(child_stdout), 1))
 	-- Tell posix_spawn to dup fd 1 (which is child_stdout already) to fd 2 (stderr)
-	file_actions:adddup2(1, 2)
+	assert(file_actions:adddup2(1, 2))
 	-- Start the child program: cat
 	pid = assert(posix_spawn.spawnp("cat", file_actions, attr, {"cat"}, nil))
 	-- Close files now owned by the child
