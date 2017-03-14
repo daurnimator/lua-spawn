@@ -9,6 +9,12 @@ local map_err = {
 	killed = "signal";
 	stopped = "stop";
 }
+
+-- hack around lack or 'bor' function
+local function had_nohang(options)
+	return (options%(unix.WNOHANG*2) - options%unix.WNOHANG) ~= 0
+end
+
 local function waitpid(pid, options)
 	if type(options) == "table" then
 		options = options.nohang and unix.WNOHANG or 0
@@ -21,7 +27,7 @@ local function waitpid(pid, options)
 			return waitpid(pid, options)
 		end
 		return nil, err, errno
-	elseif which_pid == 0 and (options % (unix.WNOHANG*2) - options % unix.WNOHANG) ~= 0 then -- hack around lack or 'bor' function
+	elseif which_pid == 0 and had_nohang(options) then
 		return false
 	else
 		err = map_err[err] or err
