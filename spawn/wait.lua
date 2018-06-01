@@ -10,7 +10,7 @@ local map_err = {
 	stopped = "stop";
 }
 
--- hack around lack or 'bor' function
+-- hack around lack of 'bor' function
 local function had_nohang(options)
 	return (options%(unix.WNOHANG*2) - options%unix.WNOHANG) ~= 0
 end
