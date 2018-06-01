@@ -190,6 +190,10 @@ static int l_posix_spawnattr_getflags(lua_State *L) {
 	lua_setfield(L, -2, "setsigdef");
 	lua_pushboolean(L, flags & POSIX_SPAWN_SETSIGMASK);
 	lua_setfield(L, -2, "setsigmask");
+#ifdef POSIX_SPAWN_SETSID
+	lua_pushboolean(L, flags & POSIX_SPAWN_SETSID);
+	lua_setfield(L, -2, "setsid");
+#endif
 #ifdef _POSIX_PRIORITY_SCHEDULING
 	lua_pushboolean(L, flags & POSIX_SPAWN_SETSCHEDULER);
 	lua_setfield(L, -2, "setscheduler");
@@ -217,6 +221,11 @@ static int l_posix_spawnattr_setflags(lua_State *L) {
 	lua_getfield(L, 2, "setsigmask");
 	if (lua_toboolean(L, -1)) flags |= POSIX_SPAWN_SETSIGMASK;
 	lua_pop(L, 4);
+#ifdef POSIX_SPAWN_SETSID
+	lua_getfield(L, 2, "setsid");
+	if (lua_toboolean(L, -1)) flags |= POSIX_SPAWN_SETSID;
+	lua_pop(L, 1);
+#endif
 #ifdef _POSIX_PRIORITY_SCHEDULING
 	lua_getfield(L, 2, "setscheduler");
 	if (lua_toboolean(L, -1)) flags |= POSIX_SPAWN_SETSCHEDULER;
