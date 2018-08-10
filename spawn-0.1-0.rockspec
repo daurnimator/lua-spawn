@@ -1,7 +1,8 @@
 package = "spawn"
-version = "scm-0"
+version = "0.1-0"
 source = {
-	url = "git://github.com/daurnimator/lua-spawn.git";
+	url = "https://github.com/daurnimator/lua-spawn/archive/v0.1.zip";
+	dir = "lua-spawn-0.1";
 }
 description = {
 	summary = "A lua library to spawn programs";

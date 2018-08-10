@@ -22,6 +22,7 @@ local function system(arg)
 end
 
 return {
+	_VERSION = "0.1";
 	start = start;
 	run = run;
 	system = system;
