@@ -22,6 +22,7 @@ local function system(arg)
 end
 
 return {
+	_VERSION = nil;
 	start = start;
 	run = run;
 	system = system;
