@@ -32,7 +32,7 @@ static const char** l_posix_checkarraystrings(lua_State *L, int arg) {
 		ret[i] = lua_tostring(L, -1);
 		lua_pop(L, 1);
 	}
-	ret[n] = NULL;
+	ret[i] = NULL;
 	return ret;
 }
 
