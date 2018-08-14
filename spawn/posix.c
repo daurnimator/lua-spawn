@@ -41,7 +41,7 @@ static int l_posix_spawn(lua_State *L) {
 	pid_t pid;
 	const char *path = luaL_checkstring(L, 1);
 	posix_spawn_file_actions_t *file_actions = luaL_checkudata(L, 2, "posix_spawn_file_actions_t");
-	posix_spawnattr_t *attr = luaL_checkudata(L, 3, "posix_spawnattr_t");
+	posix_spawnattr_t *attr = luaL_testudata(L, 3, "posix_spawnattr_t");
 	const char **argv, **envp;
 	lua_settop(L, 5);
 	argv = luaL_checkarraystrings(L, 4);
@@ -62,7 +62,7 @@ static int l_posix_spawnp(lua_State *L) {
 	pid_t pid;
 	const char *file = luaL_checkstring(L, 1);
 	posix_spawn_file_actions_t *file_actions = luaL_checkudata(L, 2, "posix_spawn_file_actions_t");
-	posix_spawnattr_t *attr = luaL_checkudata(L, 3, "posix_spawnattr_t");
+	posix_spawnattr_t *attr = luaL_testudata(L, 3, "posix_spawnattr_t");
 	const char **argv, **envp;
 	lua_settop(L, 5);
 	argv = luaL_checkarraystrings(L, 4);

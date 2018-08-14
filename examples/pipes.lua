@@ -9,7 +9,6 @@ local read, write, pid do
 	-- file_actions is an ordered list of operations to do before the child process starts
 	-- you can add operations to it such as `open()`, `dup2()` and `close()`
 	local file_actions = assert(posix_spawn.new_file_actions())
-	local attr = assert(posix_spawn.new_attr())
 	-- Create two pipes, one for stdin, one shared by stdout and stderr
 	-- the first fd returned by pipe() can only be read from
 	-- the second fd returned by pipe() can only be written to
@@ -24,7 +23,7 @@ local read, write, pid do
 	-- Tell posix_spawn to dup fd 1 (which is child_stdout already) to fd 2 (stderr)
 	assert(file_actions:adddup2(1, 2))
 	-- Start the child program: cat
-	pid = assert(posix_spawn.spawnp("cat", file_actions, attr, {"cat"}, nil))
+	pid = assert(posix_spawn.spawnp("cat", file_actions, nil, {"cat"}, nil))
 	-- Close files now owned by the child
 	child_stdin:close()
 	child_stdout:close()
