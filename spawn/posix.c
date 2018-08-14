@@ -175,8 +175,27 @@ static int l_posix_spawnattr_setsigmask(lua_State *L) {
 	return 1;
 }
 
+static const struct { const char* flagname; int value; } supported_flags[] = {
+	{ "resetids", POSIX_SPAWN_RESETIDS },
+	{ "setpgroup", POSIX_SPAWN_SETPGROUP },
+	{ "setsigdef", POSIX_SPAWN_SETSIGDEF },
+	{ "setsigmask", POSIX_SPAWN_SETSIGMASK },
+#ifdef POSIX_SPAWN_SETSID
+	{ "setsid", POSIX_SPAWN_SETSID },
+#endif
+#ifdef _POSIX_PRIORITY_SCHEDULING
+	{ "setscheduler", POSIX_SPAWN_SETSCHEDULER },
+	{ "setschedparam", POSIX_SPAWN_SETSCHEDPARAM },
+#endif
+#ifdef POSIX_SPAWN_USEVFORK
+	{ "usevfork", POSIX_SPAWN_USEVFORK },
+#endif
+};
+#define N_SUPPORTED_FLAGS (sizeof(supported_flags)/sizeof(supported_flags[0]))
+
 static int l_posix_spawnattr_getflags(lua_State *L) {
 	int r;
+	size_t i;
 	posix_spawnattr_t *attr = luaL_checkudata(L, 1, "posix_spawnattr_t");
 	short int flags;
 	if (0 != (r = posix_spawnattr_getflags(attr, &flags))) {
@@ -185,63 +204,25 @@ static int l_posix_spawnattr_getflags(lua_State *L) {
 		lua_pushinteger(L, r);
 		return 3;
 	}
-	lua_createtable(L, 0, 7);
-	lua_pushboolean(L, flags & POSIX_SPAWN_RESETIDS);
-	lua_setfield(L, -2, "resetids");
-	lua_pushboolean(L, flags & POSIX_SPAWN_SETPGROUP);
-	lua_setfield(L, -2, "setpgroup");
-	lua_pushboolean(L, flags & POSIX_SPAWN_SETSIGDEF);
-	lua_setfield(L, -2, "setsigdef");
-	lua_pushboolean(L, flags & POSIX_SPAWN_SETSIGMASK);
-	lua_setfield(L, -2, "setsigmask");
-#ifdef POSIX_SPAWN_SETSID
-	lua_pushboolean(L, flags & POSIX_SPAWN_SETSID);
-	lua_setfield(L, -2, "setsid");
-#endif
-#ifdef _POSIX_PRIORITY_SCHEDULING
-	lua_pushboolean(L, flags & POSIX_SPAWN_SETSCHEDULER);
-	lua_setfield(L, -2, "setscheduler");
-	lua_pushboolean(L, flags & POSIX_SPAWN_SETSCHEDPARAM);
-	lua_setfield(L, -2, "setschedparam");
-#endif
-#ifdef POSIX_SPAWN_USEVFORK
-	lua_pushboolean(L, flags & POSIX_SPAWN_USEVFORK);
-	lua_setfield(L, -2, "usevfork");
-#endif
+	lua_createtable(L, 0, N_SUPPORTED_FLAGS);
+	for (i=0; i<N_SUPPORTED_FLAGS; i++) {
+		lua_pushboolean(L, flags & supported_flags[i].value);
+		lua_setfield(L, -2, supported_flags[i].flagname);
+	}
 	return 1;
 }
 
 static int l_posix_spawnattr_setflags(lua_State *L) {
 	int r;
+	size_t i;
 	posix_spawnattr_t *attr = luaL_checkudata(L, 1, "posix_spawnattr_t");
 	short int flags = 0;
 	luaL_checktype(L, 2, LUA_TTABLE);
-	lua_getfield(L, 2, "resetids");
-	if (lua_toboolean(L, -1)) flags |= POSIX_SPAWN_RESETIDS;
-	lua_getfield(L, 2, "setpgroup");
-	if (lua_toboolean(L, -1)) flags |= POSIX_SPAWN_SETPGROUP;
-	lua_getfield(L, 2, "setsigdef");
-	if (lua_toboolean(L, -1)) flags |= POSIX_SPAWN_SETSIGDEF;
-	lua_getfield(L, 2, "setsigmask");
-	if (lua_toboolean(L, -1)) flags |= POSIX_SPAWN_SETSIGMASK;
-	lua_pop(L, 4);
-#ifdef POSIX_SPAWN_SETSID
-	lua_getfield(L, 2, "setsid");
-	if (lua_toboolean(L, -1)) flags |= POSIX_SPAWN_SETSID;
-	lua_pop(L, 1);
-#endif
-#ifdef _POSIX_PRIORITY_SCHEDULING
-	lua_getfield(L, 2, "setscheduler");
-	if (lua_toboolean(L, -1)) flags |= POSIX_SPAWN_SETSCHEDULER;
-	lua_getfield(L, 2, "setschedparam");
-	if (lua_toboolean(L, -1)) flags |= POSIX_SPAWN_SETSCHEDPARAM;
-	lua_pop(L, 2);
-#endif
-#ifdef POSIX_SPAWN_USEVFORK
-	lua_getfield(L, 2, "usevfork");
-	if (lua_toboolean(L, -1)) flags |= POSIX_SPAWN_USEVFORK;
-	lua_pop(L, 1);
-#endif
+	for (i=0; i<N_SUPPORTED_FLAGS; i++) {
+		lua_getfield(L, 2, supported_flags[i].flagname);
+		if (lua_toboolean(L, -1)) flags |= supported_flags[i].value;
+		lua_pop(L, 1);
+	}
 	if (0 != (r = posix_spawnattr_setflags(attr, flags))) {
 		lua_pushnil(L);
 		lua_pushstring(L, strerror(r));
