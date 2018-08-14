@@ -16,24 +16,28 @@
 extern char** environ;
 #endif
 
-static const char** luaL_checkarraystrings(lua_State *L, int arg) {
-	lua_Integer n;
+static const char** l_posix_checkarraystrings(lua_State *L, int arg) {
 	const char **ret;
-	arg = lua_absindex(L, arg);
-	luaL_checktype(L, arg, LUA_TTABLE);
-	n = luaL_len(L, arg);
+	lua_Integer n, i;
+	int t;
+	int abs_arg = lua_absindex(L, arg);
+	luaL_checktype(L, abs_arg, LUA_TTABLE);
+	n = lua_rawlen(L, abs_arg);
 	ret = lua_newuserdata(L, (n+1)*sizeof(char*));
-	ret[n] = NULL;
-	for (; n>0; n--) {
-		luaL_argcheck(L, lua_geti(L, arg, n) == LUA_TSTRING, arg, "expected array of strings");
-		ret[n-1] = lua_tostring(L, -1);
+	for (i=0; i<n; i++) {
+		t = lua_rawgeti(L, abs_arg, i+1);
+		if (t == LUA_TNIL)
+			break;
+		luaL_argcheck(L, t == LUA_TSTRING, arg, "expected array of strings");
+		ret[i] = lua_tostring(L, -1);
 		lua_pop(L, 1);
 	}
+	ret[n] = NULL;
 	return ret;
 }
 
-static const char** luaL_optarraystrings(lua_State *L, int n, const char** def) {
-	return lua_isnoneornil(L, n) ? def : luaL_checkarraystrings(L, n);
+static const char** l_posix_optarraystrings(lua_State *L, int n, const char** def) {
+	return lua_isnoneornil(L, n) ? def : l_posix_checkarraystrings(L, n);
 }
 
 static int l_posix_spawn(lua_State *L) {
@@ -44,8 +48,8 @@ static int l_posix_spawn(lua_State *L) {
 	posix_spawnattr_t *attr = luaL_testudata(L, 3, "posix_spawnattr_t");
 	const char **argv, **envp;
 	lua_settop(L, 5);
-	argv = luaL_checkarraystrings(L, 4);
-	envp = luaL_optarraystrings(L, 5, (const char**)environ);
+	argv = l_posix_checkarraystrings(L, 4);
+	envp = l_posix_optarraystrings(L, 5, (const char**)environ);
 	if (0 != (r = posix_spawn(&pid, path, file_actions, attr, (char*const*)argv, (char*const*)envp))) {
 		lua_pushnil(L);
 		lua_pushstring(L, strerror(r));
@@ -65,8 +69,8 @@ static int l_posix_spawnp(lua_State *L) {
 	posix_spawnattr_t *attr = luaL_testudata(L, 3, "posix_spawnattr_t");
 	const char **argv, **envp;
 	lua_settop(L, 5);
-	argv = luaL_checkarraystrings(L, 4);
-	envp = luaL_optarraystrings(L, 5, (const char**)environ);
+	argv = l_posix_checkarraystrings(L, 4);
+	envp = l_posix_optarraystrings(L, 5, (const char**)environ);
 	if (0 != (r = posix_spawnp(&pid, file, file_actions, attr, (char*const*)argv, (char*const*)envp))) {
 		lua_pushnil(L);
 		lua_pushstring(L, strerror(r));
