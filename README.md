@@ -14,6 +14,14 @@ A lua library to spawn programs
 Currently only works on POSIXy systems, but the high level module should be portable to Windows; someone just needs to put the work in.
 
 
+## Installation
+
+It's recommended to install lua-spawn by using [luarocks](https://luarocks.org/).
+This will automatically install run-time lua dependencies for you.
+
+    $ luarocks install spawn
+
+
 ## Rationale
 
 Spawning a new child program from a lua script is surprisingly hard.
