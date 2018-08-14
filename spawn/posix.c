@@ -503,8 +503,8 @@ static const luaL_Reg spawnattr_methods[] = {
 #ifdef _POSIX_PRIORITY_SCHEDULING
 	{ "getschedpolicy", l_posix_spawnattr_getschedpolicy },
 	{ "setschedpolicy", l_posix_spawnattr_setschedpolicy },
-	// { "getschedparam", l_posix_spawnattr_getschedparam },
-	// { "setschedparam", l_posix_spawnattr_setschedparam },
+	/* { "getschedparam", l_posix_spawnattr_getschedparam }, */
+	/* { "setschedparam", l_posix_spawnattr_setschedparam }, */
 #endif
 	{ NULL, NULL }
 };
