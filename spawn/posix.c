@@ -382,16 +382,20 @@ static int l_posix_spawn_file_actions_addopen(lua_State *L) {
 		lua_getfield(L, 4, "creat");
 		if (lua_toboolean(L, -1)) oflag |= O_CREAT;
 		lua_getfield(L, 4, "dsync");
+#ifdef O_DSYNC
 		if (lua_toboolean(L, -1)) oflag |= O_DSYNC;
 		lua_getfield(L, 4, "excl");
+#endif
 		if (lua_toboolean(L, -1)) oflag |= O_EXCL;
 		lua_getfield(L, 4, "noctty");
 		if (lua_toboolean(L, -1)) oflag |= O_NOCTTY;
 		lua_getfield(L, 4, "nonblock");
 		if (lua_toboolean(L, -1)) oflag |= O_NONBLOCK;
 		lua_getfield(L, 4, "rsync");
+#ifdef O_RSYNC
 		if (lua_toboolean(L, -1)) oflag |= O_RSYNC;
 		lua_getfield(L, 4, "sync");
+#endif
 		if (lua_toboolean(L, -1)) oflag |= O_SYNC;
 		lua_getfield(L, 4, "trunc");
 		if (lua_toboolean(L, -1)) oflag |= O_TRUNC;
