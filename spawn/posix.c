@@ -381,21 +381,32 @@ static int l_posix_spawn_file_actions_addopen(lua_State *L) {
 		if (lua_toboolean(L, -1)) oflag |= O_APPEND;
 		lua_getfield(L, 4, "creat");
 		if (lua_toboolean(L, -1)) oflag |= O_CREAT;
-		lua_getfield(L, 4, "dsync");
-		if (lua_toboolean(L, -1)) oflag |= O_DSYNC;
 		lua_getfield(L, 4, "excl");
 		if (lua_toboolean(L, -1)) oflag |= O_EXCL;
 		lua_getfield(L, 4, "noctty");
 		if (lua_toboolean(L, -1)) oflag |= O_NOCTTY;
 		lua_getfield(L, 4, "nonblock");
 		if (lua_toboolean(L, -1)) oflag |= O_NONBLOCK;
-		lua_getfield(L, 4, "rsync");
-		if (lua_toboolean(L, -1)) oflag |= O_RSYNC;
-		lua_getfield(L, 4, "sync");
-		if (lua_toboolean(L, -1)) oflag |= O_SYNC;
 		lua_getfield(L, 4, "trunc");
 		if (lua_toboolean(L, -1)) oflag |= O_TRUNC;
-		lua_pop(L, 9);
+		lua_pop(L, 6);
+
+		/* defined in posix, but optional */
+#ifdef O_SYNC
+		lua_getfield(L, 4, "sync");
+		if (lua_toboolean(L, -1)) oflag |= O_SYNC;
+		lua_pop(L, 1);
+#endif
+#ifdef O_DSYNC
+		lua_getfield(L, 4, "dsync");
+		if (lua_toboolean(L, -1)) oflag |= O_DSYNC;
+		lua_pop(L, 1);
+#endif
+#ifdef O_RSYNC
+		lua_getfield(L, 4, "rsync");
+		if (lua_toboolean(L, -1)) oflag |= O_RSYNC;
+		lua_pop(L, 1);
+#endif
 
 #ifdef O_ASYNC
 		lua_getfield(L, 4, "async");
