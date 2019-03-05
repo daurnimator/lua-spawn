@@ -183,7 +183,7 @@ static const struct { const char* flagname; int value; } supported_flags[] = {
 #ifdef POSIX_SPAWN_SETSID
 	{ "setsid", POSIX_SPAWN_SETSID },
 #endif
-#ifdef _POSIX_PRIORITY_SCHEDULING
+#if (defined _POSIX_PRIORITY_SCHEDULING) && _POSIX_PRIORITY_SCHEDULING != -1
 	{ "setscheduler", POSIX_SPAWN_SETSCHEDULER },
 	{ "setschedparam", POSIX_SPAWN_SETSCHEDPARAM },
 #endif
@@ -261,7 +261,7 @@ static int l_posix_spawnattr_setpgroup(lua_State *L) {
 	return 1;
 }
 
-#ifdef _POSIX_PRIORITY_SCHEDULING
+#if (defined _POSIX_PRIORITY_SCHEDULING) && _POSIX_PRIORITY_SCHEDULING != -1
 static int l_posix_spawnattr_getschedpolicy(lua_State *L) {
 	int r;
 	posix_spawnattr_t *attr = luaL_checkudata(L, 1, "posix_spawnattr_t");
@@ -511,7 +511,7 @@ static const luaL_Reg spawnattr_methods[] = {
 	{ "setflags", l_posix_spawnattr_setflags },
 	{ "getpgroup", l_posix_spawnattr_getpgroup },
 	{ "setpgroup", l_posix_spawnattr_setpgroup },
-#ifdef _POSIX_PRIORITY_SCHEDULING
+#if (defined _POSIX_PRIORITY_SCHEDULING) && _POSIX_PRIORITY_SCHEDULING != -1
 	{ "getschedpolicy", l_posix_spawnattr_getschedpolicy },
 	{ "setschedpolicy", l_posix_spawnattr_setschedpolicy },
 	/* { "getschedparam", l_posix_spawnattr_getschedparam }, */
