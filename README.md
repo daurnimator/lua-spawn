@@ -9,7 +9,7 @@ A lua library to spawn programs
 
   - High level functions for common cases
   - Bindings to the full `posix_spawn` family of functions
-  - Compatible with Lua 5.1, 5.2, 5.3 and [LuaJIT](http://luajit.org/)
+  - Compatible with Lua 5.1, 5.2, 5.3, 5.4 and [LuaJIT](http://luajit.org/)
 
 Currently only works on POSIXy systems, but the high level module should be portable to Windows; someone just needs to put the work in.
 
